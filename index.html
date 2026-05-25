@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MI1 — Core Interface</title>
+    <style>
+        :root {
+            --bg-main: #06060a;
+            --bg-panel: rgba(14, 16, 23, 0.75);
+            --cyber-cyan: #00f3ff;
+            --cyber-purple: #b026ff;
+            --text-main: #c4d1ec;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Consolas', 'Courier New', monospace;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%);
+            background-size: 100% 4px;
+        }
+
+        header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 15, 0.9);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--cyber-cyan);
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+            letter-spacing: 2px;
+        }
+
+        /* Contenedor del Selector de Modelos */
+        .model-selector-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .model-selector-container label {
+            font-size: 0.8rem;
+            color: #7c7c8a;
+            letter-spacing: 1px;
+        }
+
+        select {
+            background: #10121a;
+            color: var(--cyber-cyan);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            padding: 6px 12px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 243, 255, 0.1);
+        }
+
+        select:focus {
+            border-color: var(--cyber-cyan);
+            box-shadow: 0 0 12px rgba(0, 243, 255, 0.3);
+        }
+
+        #core-container {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #orbe-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .orbe {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,243,255,1) 0%, rgba(176,38,255,0.4) 50%, rgba(0,0,0,0) 70%);
+            box-shadow: 0 0 35px rgba(0, 243, 255, 0.4), inset 0 0 40px rgba(176, 38, 255, 0.5);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: flotar 4s ease-in-out infinite;
+        }
+
+        .orbe.hablando {
+            animation: hablar 0.4s ease-in-out infinite alternate, flotar 1.5s ease-in-out infinite;
+            box-shadow: 0 0 65px rgba(0, 243, 255, 0.8), inset 0 0 55px rgba(176, 38, 255, 0.9);
+            width: 180px;
+            height: 180px;
+        }
+
+        @keyframes flotar {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+
+        @keyframes hablar {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.4) contrast(1.2); }
+        }
+
+        #chat-container {
+            width: 360px;
+            height: calc(100% - 40px);
+            margin: 20px;
+            background: var(--bg-panel);
+            border: 1px solid rgba(0, 243, 255, 0.15);
+            backdrop-filter: blur(6px);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 15px;
+            z-index: 2;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+        }
+
+        .message {
+            padding: 12px 14px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .user-message {
+            background: rgba(176, 38, 255, 0.12);
+            border-left: 3px solid var(--cyber-purple);
+            align-self: flex-end;
+            width: 90%;
+        }
+
+        .ai-message {
+            background: rgba(0, 243, 255, 0.06);
+            border-left: 3px solid var(--cyber-cyan);
+            align-self: flex-start;
+            width: 90%;
+        }
+
+        #input-container {
+            padding: 20px;
+            background: rgba(8, 8, 12, 0.95);
+            border-top: 1px solid rgba(0, 243, 255, 0.2);
+            display: flex;
+            gap: 15px;
+            z-index: 2;
+        }
+
+        textarea {
+            flex: 1;
+            background: #0f1118;
+            border: 1px solid rgba(0, 243, 255, 0.25);
+            border-radius: 2px;
+            color: #fff;
+            padding: 12px;
+            resize: none;
+            height: 24px;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--cyber-cyan);
+            box-shadow: 0 0 12px rgba(0, 243, 255, 0.25);
+        }
+
+        button {
+            background: transparent;
+            color: var(--cyber-cyan);
+            border: 1px solid var(--cyber-cyan);
+            padding: 0 30px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
+        }
+
+        button:hover {
+            background: var(--cyber-cyan);
+            color: #000;
+            box-shadow: 0 0 15px var(--cyber-cyan);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🧠 MI1 // COGNITIVE CORE</h1>
+        <div class="model-selector-container">
+            <label for="model-select">NÚCLEO IA:</label>
+            <select id="model-select">
+                <option value="">Cargando modelos...</option>
+            </select>
+        </div>
+    </header>
+
+    <div id="core-container">
+        <div id="chat-container">
+            <div class="message ai-message">MI1: Matriz establecida. Cargando lista de modelos locales...</div>
+        </div>
+
+        <div id="orbe-wrapper">
+            <div id="mi1-orbe" class="orbe"></div>
+        </div>
+    </div>
+
+    <div id="input-container">
+        <textarea id="user-input" placeholder="Transmite tu instrucción de desarrollo a MI1..."></textarea>
+        <button id="send-btn">ENVIAR</button>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

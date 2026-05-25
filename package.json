@@ -1,0 +1,15 @@
+{
+  "name": "mi1-assistant",
+  "version": "1.0.0",
+  "description": "Asistente de programación local autónomo",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "Rummy",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^31.0.0" 
+  }
+}
